@@ -26,14 +26,23 @@ router.post('/', (req, res, next) => {
 
 // PUT :/api/carts/:cartId
 router.put('/:cartId', (req, res, next) => {
-  const { status } = req.body;
   const { cartId } = req.params;
 
   Cart.findByPk(cartId)
     .then(cart => {
-      return cart.update({ status });
+      return cart.update({ ...req.body });
     })
     .then(updatedCart => res.status(202).json(updatedCart))
+    .catch(next);
+});
+
+// GET :/api/carts/:userId/:status
+router.get('/:userId', (req, res, next) => {
+  const { userId } = req.params;
+  Cart.findAll({ where: { userId } })
+    .then(carts => {
+      res.status(200).json(carts);
+    })
     .catch(next);
 });
 

@@ -3,6 +3,9 @@ const app = express();
 const path = require('path');
 const session = require('express-session');
 
+// Logger for development
+app.use(require('morgan')('dev'));
+
 // Body parsing middleware
 app.use(express.json());
 app.use(express.urlencoded({ extended: true })); // for API testing in Postman
@@ -15,6 +18,12 @@ app.use(
     saveUninitialized: false,
   })
 );
+
+// Session logging middleware
+app.use((req, res, next) => {
+  console.log('SESSION: ', req.session)
+  next()
+})
 
 app.get('/app.js', (req, res, next) =>
   res.sendFile(path.join(__dirname, '..', 'dist', 'main.js'))

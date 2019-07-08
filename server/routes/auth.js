@@ -1,6 +1,6 @@
 const router = require('express').Router();
 const {
-  models: { User },
+  models: { User, Cart, LineItem },
 } = require('../db');
 
 module.exports = router;
@@ -8,6 +8,8 @@ module.exports = router;
 // POST :/api/auth
 // To login
 router.post('/', (req, res, next) => {
+  const { lineItems } = req.session;
+
   User.findOne({
     where: {
       email: req.body.email,
@@ -21,6 +23,24 @@ router.post('/', (req, res, next) => {
         throw error;
       }
       req.session.user = user;
+// Will merge the lineItems from session with what's in the users cart on login
+      if (lineItems) {
+        let usersCart;
+        Cart.findOne({ where: { userId: user.id, status: 'inCart' } })
+          .then(cart => (usersCart = cart))
+          .then(() =>lineItems.forEach(item => {
+            const { productId, quantity } = item;
+            LineItem.findOne({ where: { productId: productId } })
+            .then(lineItem => {
+              if (lineItem) {
+                lineItem.update({quantity: lineItem.quantity + quantity});
+              } else {
+                LineItem.create({productId, quantity, cartId: usersCart.id})
+              }
+            });
+          })
+        );
+      }
       res.send(user);
     })
     .catch(next);

@@ -6,6 +6,8 @@ import store from './store';
 
 import { MuiThemeProvider, createMuiTheme } from '@material-ui/core';
 import grey from '@material-ui/core/colors/grey';
+import blue from '@material-ui/core/colors/blue';
+import red from '@material-ui/core/colors/red';
 
 const root = document.querySelector('#root');
 const theme = createMuiTheme({
@@ -15,6 +17,8 @@ const theme = createMuiTheme({
       grey: grey[500],
       lightGrey: grey[200],
     },
+    primary: blue,
+    secondary: red,
   },
 });
 

@@ -1,4 +1,7 @@
 import React from 'react';
+import { connect } from 'react-redux';
+
+import { removeLineItem } from '../../reducers';
 
 import styles from './styles';
 import { withStyles } from '@material-ui/core/styles';
@@ -6,9 +9,16 @@ import { withStyles } from '@material-ui/core/styles';
 import Typography from '@material-ui/core/Typography';
 import Button from '@material-ui/core/Button';
 
-import QuantityDropdown from './QuantityDropdown';
+// import QuantitySetter from './QuantitySetter';
+import QuantitySetter from './QuantitySetter';
 
-const Product = () => {
+const Product = ({ lineItem, removeLineItem }) => {
+  const {
+    id,
+    cartId,
+    productId,
+    productInfo: { imageUrl, price, name },
+  } = lineItem;
   return (
     <div
       style={{
@@ -20,16 +30,13 @@ const Product = () => {
         alignItems: 'center',
       }}
     >
-      <img
-        src="https://jetimages.jetcdn.net/md5/d3689eb6758f93e8745e4f9fb78bd529?odnBound=112"
-        height="100px"
-      />
+      <a href={`#/products/${id}`}>
+        <img src={imageUrl} height="100px" />
+      </a>
       <div style={{ marginLeft: '2rem' }}>
-        <Typography variant="subtitle1">
-          Nestle Pure Life Splash Water
-        </Typography>
+        <Typography variant="subtitle1">{name}</Typography>
         <Typography variant="subtitle2" style={{ fontWeight: 'bold' }}>
-          $12.48
+          ${Number(price).toFixed(2)}
         </Typography>
       </div>
       <div
@@ -39,8 +46,14 @@ const Product = () => {
           width: '100%',
         }}
       >
-        <QuantityDropdown />
-        <Button color="secondary" style={{ margin: '1rem' }}>
+        <QuantitySetter lineItem={lineItem} />
+        <Button
+          onClick={() => {
+            removeLineItem(id, cartId, productId);
+          }}
+          color="secondary"
+          style={{ margin: '1rem' }}
+        >
           Remove
         </Button>
       </div>
@@ -48,4 +61,7 @@ const Product = () => {
   );
 };
 
-export default withStyles(styles)(Product);
+export default connect(
+  null,
+  { removeLineItem }
+)(withStyles(styles)(Product));

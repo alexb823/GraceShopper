@@ -1,7 +1,7 @@
 import React from 'react';
 
 import Title from './Title';
-import NotInStockMsg from './NotInStockMsg';
+// import NotInStockMsg from './NotInStockMsg';
 import Products from './Products';
 
 const Cart = () => {
@@ -14,7 +14,8 @@ const Cart = () => {
       }}
     >
       <Title />
-      <NotInStockMsg />
+      {/* <NotInStockMsg /> */}
+      {/* Will handle the above later */}
       <Products />
     </div>
   );
